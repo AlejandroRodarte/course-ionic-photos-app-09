@@ -4,6 +4,7 @@ import { Post } from '../../../interfaces/post';
 import { GetPostsResponse } from '../../../interfaces/get-posts-response';
 import { tap } from 'rxjs/operators';
 import { PageTracker } from '../../../interfaces/page-tracker';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tab1',
@@ -20,21 +21,39 @@ export class Tab1Page implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.pageTracker = this.postsService.pageTracker;
+    this.loadPosts().subscribe();
+  }
 
-    this
-      .postsService
-      .getPosts()
+  loadMorePosts(event: any): void {
+
+    this.
+      loadPosts()
       .pipe(
-        tap(
-          (response: GetPostsResponse) => {
-            this.posts = response.posts;
-            console.log(this.posts);
+        tap(() => {
+
+          event.target.complete();
+
+          if (this.pageTracker.lastPage) {
+            event.target.disabled = true;
           }
-        )
+
+        })
       )
       .subscribe();
+
+  }
+
+  private loadPosts(): Observable<GetPostsResponse> {
+
+    return this
+            .postsService
+            .getPosts()
+            .pipe(
+              tap(
+                (response: GetPostsResponse) => this.posts.push(...response.posts)
+              )
+            );
 
   }
 
