@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PostsService } from '../../services/posts.service';
 import { Post } from '../../../interfaces/post';
 import { GetPostsResponse } from '../../../interfaces/get-posts-response';
 import { tap } from 'rxjs/operators';
 import { PageTracker } from '../../../interfaces/page-tracker';
 import { Observable } from 'rxjs';
+import { IonInfiniteScroll } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -13,15 +14,16 @@ import { Observable } from 'rxjs';
 })
 export class Tab1Page implements OnInit {
 
+  @ViewChild(IonInfiniteScroll, { static: false })
+  private infiniteScroll: IonInfiniteScroll;
+
   public posts: Post[] = [];
-  public pageTracker: PageTracker;
 
   constructor(
     private postsService: PostsService
   ) {}
 
   ngOnInit() {
-    this.pageTracker = this.postsService.pageTracker;
     this.loadPosts().subscribe();
   }
 
@@ -34,7 +36,7 @@ export class Tab1Page implements OnInit {
 
           event.target.complete();
 
-          if (this.pageTracker.lastPage) {
+          if (this.postsService.pageTracker.lastPage) {
             event.target.disabled = true;
           }
 
@@ -44,14 +46,30 @@ export class Tab1Page implements OnInit {
 
   }
 
-  private loadPosts(): Observable<GetPostsResponse> {
+  refreshPosts(event: any): void {
+
+    this.postsService.resetTracker();
+
+    this
+      .loadPosts(false)
+      .pipe(
+        tap(() => {
+          event.target.complete();
+          this.infiniteScroll.disabled = false;
+        })
+      )
+      .subscribe();
+
+  }
+
+  private loadPosts(append: boolean = true): Observable<GetPostsResponse> {
 
     return this
             .postsService
             .getPosts()
             .pipe(
               tap(
-                (response: GetPostsResponse) => this.posts.push(...response.posts)
+                (response: GetPostsResponse) => append ? this.posts.push(...response.posts) : this.posts = response.posts
               )
             );
 

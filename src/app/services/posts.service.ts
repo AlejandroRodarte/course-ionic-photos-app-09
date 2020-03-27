@@ -30,6 +30,15 @@ export class PostsService {
     private http: HttpClient
   ) { }
 
+  resetTracker(): void {
+
+    this.pageTracker = {
+      page: 1,
+      lastPage: false
+    };
+
+  }
+
   getPosts(): Observable<GetPostsResponse> {
     return this
             .http
