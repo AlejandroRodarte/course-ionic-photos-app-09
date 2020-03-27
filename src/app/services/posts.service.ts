@@ -33,7 +33,7 @@ export class PostsService {
   getPosts(): Observable<GetPostsResponse> {
     return this
             .http
-            .get<GetPostsResponse>(`${environment.url}/posts?pagina=${this.pageTracker.page}`)
+            .get<GetPostsResponse>(`${environment.url}/post?pagina=${this.pageTracker.page}`)
             .pipe(tap(this.updatePageTracker));
   }
 

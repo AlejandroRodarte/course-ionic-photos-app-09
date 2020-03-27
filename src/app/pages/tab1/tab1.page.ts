@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PostsService } from '../../services/posts.service';
 import { Post } from '../../../interfaces/post';
 import { GetPostsResponse } from '../../../interfaces/get-posts-response';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab1',
@@ -21,10 +22,15 @@ export class Tab1Page implements OnInit {
     this
       .postsService
       .getPosts()
-      .subscribe((response: GetPostsResponse) => {
-        console.log(this.posts);
-        this.posts = response.posts;
-      });
+      .pipe(
+        tap(
+          (response: GetPostsResponse) => {
+            this.posts = response.posts;
+            console.log(this.posts);
+          }
+        )
+      )
+      .subscribe();
 
   }
 
