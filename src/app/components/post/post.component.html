@@ -27,33 +27,16 @@
 
   <!-- imagenes -->
 
-  <ion-slides pager="true">
+  <ion-slides 
+    pager="true"
+    *ngIf="post.img.length > 0"
+  >
 
-    <ion-slide>
-
-      <img 
-        src="/assets/perro-1.jpg" 
-        alt="slide-img"
-      >
-
-    </ion-slide>
-
-    <ion-slide>
-
-      <img 
-        src="/assets/perro-2.jpg" 
-        alt="slide-img"
-      >
-
-    </ion-slide>
-
-    <ion-slide>
-
-      <img 
-        src="/assets/perro-3.jpg" 
-        alt="slide-img"
-      >
-
+    <ion-slide
+      class="image-slide"
+      *ngFor="let img of post.img"
+      [ngStyle]="{ 'background-image': 'url(' + url + '/post/imagen/' + post.usuario._id + '/' + img + ')' }"
+    >
     </ion-slide>
 
   </ion-slides>
