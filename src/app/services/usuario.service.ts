@@ -64,6 +64,22 @@ export class UsuarioService {
 
   }
 
+  update(usuario: Usuario): Observable<boolean> {
+
+    const headers = new HttpHeaders({
+      'x-token': this.token
+    });
+
+    return this
+            .http
+            .post<AuthResponse>(`${environment.url}/user/update`, usuario, { headers })
+            .pipe(
+              tap(this.handleAuthResponseToken),
+              map((response: AuthResponse) => response.ok)
+            );
+
+  }
+
   validateToken(): Observable<UserInfoResponse> {
 
     let httpHeaders = new HttpHeaders();

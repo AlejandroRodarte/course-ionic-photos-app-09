@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Usuario } from '../../../interfaces/user';
 import { UsuarioService } from '../../services/usuario.service';
+import { tap, catchError } from 'rxjs/operators';
+import { UiService } from '../../services/ui.service';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +17,8 @@ export class Tab3Page implements OnInit {
   public usuario: Usuario;
 
   constructor(
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private uiService: UiService
   ) {}
 
   ngOnInit() {
@@ -31,6 +34,25 @@ export class Tab3Page implements OnInit {
   }
 
   onSubmit(): void {
+
+    this
+      .usuarioService
+      .update(this.updateForm.value)
+      .pipe(
+        tap(() => {
+
+          this.uiService.presentToast('Datos actualizados exitosamente');
+
+          for (const key in this.updateForm.value) {
+            if (this.usuario.hasOwnProperty(key)) {
+              this.usuario[key] = this.updateForm.value[key];
+            }
+          }
+
+        }),
+        catchError(() => () => this.uiService.presentToast('No se pudo actualizar'))
+      )
+      .subscribe();
 
   }
 
