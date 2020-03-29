@@ -17,45 +17,6 @@ export class LoginPage implements OnInit {
   @ViewChild('mainSlides', { static: false })
   public mainSlides: IonSlides;
 
-  public avatars: Avatar[] = [
-    {
-      img: 'av-1.png',
-      seleccionado: true
-    },
-    {
-      img: 'av-2.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-3.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-4.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-5.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-6.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-7.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-8.png',
-      seleccionado: false
-    }
-  ];
-
-  public avatarSlideOpts = {
-    slidesPerView: 3.5
-  };
-
   public mainSlideOpts = {
     noSwiping: true,
     noSwipingClass: 'swiper-no-swiping'
@@ -100,14 +61,14 @@ export class LoginPage implements OnInit {
     this.signupForm = new FormGroup({
       email: new FormControl(this.testSignupUser.email, [Validators.required, Validators.email]),
       nombre: new FormControl(this.testSignupUser.nombre, [Validators.required]),
-      password: new FormControl(this.testSignupUser.password, [Validators.required])
+      password: new FormControl(this.testSignupUser.password, [Validators.required]),
+      avatar: new FormControl(this.testSignupUser.avatar, [Validators.required])
     });
 
   }
 
-  onSelectAvatar(avatar: Avatar): void {
-    this.avatars.find((currentAvatar: Avatar) => currentAvatar.seleccionado).seleccionado = false;
-    avatar.seleccionado = true;
+  onAvatarSelected(avatarImg: string) {
+    this.signupForm.get('avatar').setValue(avatarImg);
   }
 
   onLoginSubmit(): void {
