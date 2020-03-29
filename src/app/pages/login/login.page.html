@@ -1,8 +1,12 @@
 <ion-content>
 
-  <ion-slides class="mainSlide">
+  <ion-slides 
+    class="mainSlide"
+    [options]="mainSlideOpts"
+    #mainSlides
+  >
 
-    <ion-slide>
+    <ion-slide class="swiper-no-swiping">
 
       <form
         [formGroup]="loginForm"
@@ -84,7 +88,7 @@
 
     </ion-slide>
 
-    <ion-slide>
+    <ion-slide class="swiper-no-swiping">
 
       <ion-grid fixed>
 
@@ -225,6 +229,7 @@
           size="small"
           fill="outline"
           color="tertiary"
+          (click)="moveToSlide(0)"
         >
           Ingresar
         </ion-button>
@@ -239,6 +244,7 @@
           size="small"
           fill="outline"
           color="tertiary"
+          (click)="moveToSlide(1)"
         >
           Registrarme
         </ion-button>

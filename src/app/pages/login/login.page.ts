@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Avatar } from 'src/interfaces/avatar';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -8,6 +9,9 @@ import { Avatar } from 'src/interfaces/avatar';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+
+  @ViewChild('mainSlides', { static: false })
+  public mainSlides: IonSlides;
 
   public avatars: Avatar[] = [
     {
@@ -48,6 +52,11 @@ export class LoginPage implements OnInit {
     slidesPerView: 3.5
   };
 
+  public mainSlideOpts = {
+    noSwiping: true,
+    noSwipingClass: 'swiper-no-swiping'
+  };
+
   public loginForm: FormGroup;
   public signupForm: FormGroup;
 
@@ -79,6 +88,10 @@ export class LoginPage implements OnInit {
 
   onSignupSubmit(): void {
     console.log(this.signupForm.value);
+  }
+
+  moveToSlide(slideIndex: number) {
+    this.mainSlides.slideTo(slideIndex);
   }
 
 }
