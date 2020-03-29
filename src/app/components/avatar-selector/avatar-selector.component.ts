@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Avatar } from '../../../interfaces/avatar';
 
 @Component({
@@ -7,6 +7,9 @@ import { Avatar } from '../../../interfaces/avatar';
   styleUrls: ['./avatar-selector.component.scss'],
 })
 export class AvatarSelectorComponent implements OnInit {
+
+  @Input()
+  public selectedAvatar = 'av-1.png';
 
   public avatars: Avatar[] = [
     {
@@ -53,7 +56,10 @@ export class AvatarSelectorComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const avatar = this.avatars.find((currentAvatar: Avatar) => currentAvatar.img === this.selectedAvatar);
+    this.onSelectAvatar(avatar);
+  }
 
   onSelectAvatar(avatar: Avatar): void {
 

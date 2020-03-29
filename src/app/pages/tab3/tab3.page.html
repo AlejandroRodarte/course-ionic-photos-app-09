@@ -56,7 +56,10 @@
 
   </ion-row>
 
-  <app-avatar-selector (avatarSelected)="onAvatarSelected($event)">
+  <app-avatar-selector 
+    (avatarSelected)="onAvatarSelected($event)"
+    [selectedAvatar]="usuario.avatar"
+  >
   </app-avatar-selector>
 
   <form

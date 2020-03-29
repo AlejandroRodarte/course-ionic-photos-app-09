@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { UsuarioGuard } from './guards/usuario.guard';
+import { AnonGuard } from './guards/anon.guard';
 
 const routes: Routes = [
   {
@@ -17,7 +18,10 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule),
+    canLoad: [
+      AnonGuard
+    ]
   }
 ];
 @NgModule({
