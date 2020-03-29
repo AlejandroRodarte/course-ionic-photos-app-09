@@ -3,7 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Avatar } from 'src/interfaces/avatar';
 import { IonSlides, NavController } from '@ionic/angular';
 import { UsuarioService } from '../../services/usuario.service';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
+import { UiService } from '../../services/ui.service';
 
 @Component({
   selector: 'app-login',
@@ -69,7 +70,8 @@ export class LoginPage implements OnInit {
 
   constructor(
     private usuarioService: UsuarioService,
-    private navController: NavController
+    private navController: NavController,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -101,14 +103,11 @@ export class LoginPage implements OnInit {
       .login(email, password)
       .pipe(
         tap((ok: boolean) => {
-
           if (ok) {
             this.navController.navigateRoot('/main/tabs/tab1', { animated: true });
-          } else {
-            // show alert
           }
-
-        })
+        }),
+        catchError(() => this.uiService.presentAlert('Usuario y password no son correctos.'))
       )
       .subscribe();
 
