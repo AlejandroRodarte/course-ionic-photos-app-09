@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Avatar } from 'src/interfaces/avatar';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, NavController } from '@ionic/angular';
 import { UsuarioService } from '../../services/usuario.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -67,7 +68,8 @@ export class LoginPage implements OnInit {
   public signupForm: FormGroup;
 
   constructor(
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private navController: NavController
   ) { }
 
   ngOnInit() {
@@ -97,6 +99,17 @@ export class LoginPage implements OnInit {
     this
       .usuarioService
       .login(email, password)
+      .pipe(
+        tap((ok: boolean) => {
+
+          if (ok) {
+            this.navController.navigateRoot('/main/tabs/tab1', { animated: true });
+          } else {
+            // show alert
+          }
+
+        })
+      )
       .subscribe();
 
   }
