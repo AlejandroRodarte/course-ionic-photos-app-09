@@ -1,7 +1,8 @@
 export interface Usuario {
-    avatar: string;
-    _id: string;
+    avatar?: string;
+    _id?: string;
     nombre: string;
     email: string;
-    __v: number;
+    __v?: number;
+    password?: string;
 }

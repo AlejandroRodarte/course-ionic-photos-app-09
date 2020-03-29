@@ -5,6 +5,7 @@ import { IonSlides, NavController } from '@ionic/angular';
 import { UsuarioService } from '../../services/usuario.service';
 import { tap, catchError } from 'rxjs/operators';
 import { UiService } from '../../services/ui.service';
+import { Usuario } from '../../../interfaces/user';
 
 @Component({
   selector: 'app-login',
@@ -65,8 +66,23 @@ export class LoginPage implements OnInit {
     password: '1234'
   };
 
+  public testSignupUser: Usuario = {
+    email: 'test@test.com',
+    password: '123456',
+    nombre: 'Test',
+    avatar: 'av-1.png'
+  };
+
   public loginForm: FormGroup;
   public signupForm: FormGroup;
+
+  private handleNavigation = (ok: boolean) => {
+    if (ok) {
+      this.navController.navigateRoot('/main/tabs/tab1', { animated: true });
+    }
+  }
+
+  private handleAlert = (message: string) => () => this.uiService.presentAlert(message);
 
   constructor(
     private usuarioService: UsuarioService,
@@ -82,9 +98,9 @@ export class LoginPage implements OnInit {
     });
 
     this.signupForm = new FormGroup({
-      email: new FormControl(null, [Validators.required, Validators.email]),
-      nombre: new FormControl(null, [Validators.required]),
-      password: new FormControl(null, [Validators.required])
+      email: new FormControl(this.testSignupUser.email, [Validators.required, Validators.email]),
+      nombre: new FormControl(this.testSignupUser.nombre, [Validators.required]),
+      password: new FormControl(this.testSignupUser.password, [Validators.required])
     });
 
   }
@@ -102,19 +118,24 @@ export class LoginPage implements OnInit {
       .usuarioService
       .login(email, password)
       .pipe(
-        tap((ok: boolean) => {
-          if (ok) {
-            this.navController.navigateRoot('/main/tabs/tab1', { animated: true });
-          }
-        }),
-        catchError(() => this.uiService.presentAlert('Usuario y password no son correctos.'))
+        tap(this.handleNavigation),
+        catchError(this.handleAlert('Usuario y password no son correctos'))
       )
       .subscribe();
 
   }
 
   onSignupSubmit(): void {
-    console.log(this.signupForm.value);
+
+    this
+      .usuarioService
+      .signup(this.signupForm.value as Usuario)
+      .pipe(
+        tap(this.handleNavigation),
+        catchError(this.handleAlert('Ese correo electrónico ya existe'))
+      )
+      .subscribe();
+
   }
 
   moveToSlide(slideIndex: number) {

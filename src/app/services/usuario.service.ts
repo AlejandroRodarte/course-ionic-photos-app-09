@@ -5,6 +5,7 @@ import { environment } from './../../environments/environment';
 import { Observable } from 'rxjs';
 import { AuthResponse } from 'src/interfaces/auth-response';
 import { tap, map } from 'rxjs/operators';
+import { Usuario } from '../../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,17 @@ import { tap, map } from 'rxjs/operators';
 export class UsuarioService {
 
   public token: string = null;
+
+  private handleAuthResponseToken = (response: AuthResponse) => {
+
+    if (response.ok) {
+      this.saveToken(response.token);
+    } else {
+      this.token = null;
+      this.storage.clear();
+    }
+
+  }
 
   constructor(
     private http: HttpClient,
@@ -26,18 +38,19 @@ export class UsuarioService {
             .http
             .post<AuthResponse>(`${environment.url}/user/login`, data)
             .pipe(
-              tap(
-                (response: AuthResponse) => {
+              tap(this.handleAuthResponseToken),
+              map((response: AuthResponse) => response.ok)
+            );
 
-                  if (response.ok) {
-                    this.saveToken(response.token);
-                  } else {
-                    this.token = null;
-                    this.storage.clear();
-                  }
+  }
 
-                }
-              ),
+  signup(usuario: Usuario): Observable<boolean> {
+
+    return this
+            .http
+            .post<AuthResponse>(`${environment.url}/user/create`, usuario)
+            .pipe(
+              tap(this.handleAuthResponseToken),
               map((response: AuthResponse) => response.ok)
             );
 
