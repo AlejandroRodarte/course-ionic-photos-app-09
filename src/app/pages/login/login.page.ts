@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Avatar } from 'src/interfaces/avatar';
 import { IonSlides } from '@ionic/angular';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-login',
@@ -57,16 +58,23 @@ export class LoginPage implements OnInit {
     noSwipingClass: 'swiper-no-swiping'
   };
 
+  public testLoginUser = {
+    email: 'usuario2@gmail.com',
+    password: '1234'
+  };
+
   public loginForm: FormGroup;
   public signupForm: FormGroup;
 
-  constructor() { }
+  constructor(
+    private usuarioService: UsuarioService
+  ) { }
 
   ngOnInit() {
 
     this.loginForm = new FormGroup({
-      email: new FormControl(null, [Validators.required, Validators.email]),
-      password: new FormControl(null, [Validators.required])
+      email: new FormControl(this.testLoginUser.email, [Validators.required, Validators.email]),
+      password: new FormControl(this.testLoginUser.password, [Validators.required])
     });
 
     this.signupForm = new FormGroup({
@@ -83,7 +91,14 @@ export class LoginPage implements OnInit {
   }
 
   onLoginSubmit(): void {
-    console.log(this.loginForm.value);
+
+    const { email, password }: { email: string, password: string } = this.loginForm.value;
+
+    this
+      .usuarioService
+      .login(email, password)
+      .subscribe();
+
   }
 
   onSignupSubmit(): void {
