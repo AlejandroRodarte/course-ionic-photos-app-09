@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { environment } from './../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber, from } from 'rxjs';
 import { AuthResponse } from 'src/interfaces/auth-response';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, switchMap } from 'rxjs/operators';
 import { Usuario } from '../../interfaces/user';
+import { UserInfoResponse } from 'src/interfaces/user-info-response';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import { Usuario } from '../../interfaces/user';
 export class UsuarioService {
 
   public token: string = null;
+  public usuario: Usuario;
 
   private handleAuthResponseToken = (response: AuthResponse) => {
 
@@ -56,9 +58,48 @@ export class UsuarioService {
 
   }
 
+  validateToken(): Observable<UserInfoResponse> {
+
+    let httpHeaders = new HttpHeaders();
+
+    return this
+            .loadToken()
+            .pipe(
+              tap(
+                (token: string) => {
+                  if (!token) {
+                    throw new Error('No token');
+                  } else {
+                    this.token = token;
+                    httpHeaders = httpHeaders.append('x-token', token);
+                  }
+                }
+              ),
+              switchMap(
+                () => this
+                        .http
+                        .get<UserInfoResponse>(`${environment.url}/user`, { headers: httpHeaders })
+                        .pipe(
+                          tap(
+                            (response: UserInfoResponse) => {
+                              if (response.ok) {
+                                this.usuario = response.usuario;
+                              }
+                            }
+                          )
+                        )
+              )
+            );
+
+  }
+
   private async saveToken(token: string): Promise<void> {
     this.token = token;
     await this.storage.set('token', token);
+  }
+
+  private loadToken(): Observable<string> {
+    return from(this.storage.get('token')) as Observable<string>;
   }
 
 }
