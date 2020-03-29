@@ -14,7 +14,9 @@ import { UserInfoResponse } from 'src/interfaces/user-info-response';
 export class UsuarioService {
 
   public token: string = null;
-  public usuario: Usuario;
+
+  // tslint:disable-next-line: variable-name
+  private _usuario: Usuario;
 
   private handleAuthResponseToken = (response: AuthResponse) => {
 
@@ -31,6 +33,10 @@ export class UsuarioService {
     private http: HttpClient,
     private storage: Storage
   ) { }
+
+  get usuario() {
+    return { ...this._usuario };
+  }
 
   login(email: string, password: string): Observable<boolean> {
 
@@ -83,7 +89,7 @@ export class UsuarioService {
                           tap(
                             (response: UserInfoResponse) => {
                               if (response.ok) {
-                                this.usuario = response.usuario;
+                                this._usuario = response.usuario;
                               }
                             }
                           )
