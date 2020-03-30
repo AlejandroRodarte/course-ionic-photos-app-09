@@ -5,7 +5,7 @@ import { PostsService } from '../../services/posts.service';
 import { tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Camera } from '@ionic-native/camera/ngx';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 declare const window: any;
 
@@ -94,6 +94,27 @@ export class Tab2Page implements OnInit {
       correctOrientation: true,
       sourceType: this.camera.PictureSourceType.CAMERA
     };
+
+    await this.processImage(cameraOptions);
+
+  }
+
+  async onLibraryClick(): Promise<void> {
+
+    const cameraOptions = {
+      quality: 60,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      correctOrientation: true,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    };
+
+    await this.processImage(cameraOptions);
+
+  }
+
+  async processImage(cameraOptions: CameraOptions): Promise<void> {
 
     try {
 

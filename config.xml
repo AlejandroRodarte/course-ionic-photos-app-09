@@ -3,7 +3,7 @@
     <name>fotosgram</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://localhost:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -120,4 +120,5 @@
     </edit-config>
     <allow-navigation href="*" />
     <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
+    <allow-navigation href="http://localhost:8100" sessionid="791d6547" />
 </widget>
