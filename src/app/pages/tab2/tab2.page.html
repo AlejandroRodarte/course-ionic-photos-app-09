@@ -11,7 +11,7 @@
       <ion-button 
         (click)="createPost()"
         color="primary"
-        [disabled]="postForm.invalid"
+        [disabled]="postForm.invalid || loadingGeo"
       >
         Compartir
       </ion-button>
@@ -45,10 +45,17 @@
           Posición actual
         </ion-label>
 
-        <ion-spinner name="lines-small">
+        <ion-spinner 
+          name="lines-small"
+          *ngIf="loadingGeo"
+        >
         </ion-spinner>
 
-        <ion-toggle slot="end">
+        <ion-toggle 
+          slot="end"
+          formControlName="posicion"
+          (ionChange)="onGeolocationToggle()"
+        >
         </ion-toggle>
 
       </ion-item>
