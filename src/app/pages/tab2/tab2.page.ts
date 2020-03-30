@@ -55,6 +55,7 @@ export class Tab2Page implements OnInit {
         tap(() => {
           this.navController.navigateForward('/main/tabs/tab1');
           this.postForm.reset();
+          this.tempImages = [];
         })
       )
       .subscribe();
@@ -122,6 +123,8 @@ export class Tab2Page implements OnInit {
 
       const img = window.Ionic.WebView.convertFileSrc(imageData);
       console.log(img);
+
+      await this.postsService.uploadImage(imageData);
 
       this.tempImages.push(img);
       console.log(this.tempImages);

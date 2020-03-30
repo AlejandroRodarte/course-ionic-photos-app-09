@@ -8,6 +8,8 @@ import { tap } from 'rxjs/operators';
 import { CreatePostResponse } from 'src/interfaces/create-post-response';
 import { UsuarioService } from './usuario.service';
 import { Post } from '../../interfaces/post';
+import { UploadImageResponse } from 'src/interfaces/upload-image-response';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +35,9 @@ export class PostsService {
 
   constructor(
     private http: HttpClient,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    // tslint:disable-next-line: deprecation
+    private fileTransfer: FileTransfer
   ) { }
 
   resetTracker(): void {
@@ -62,6 +66,21 @@ export class PostsService {
             .http
             .post<CreatePostResponse>(`${environment.url}/post`, post, { headers })
             .pipe(tap((response: CreatePostResponse) => this.postCreated.next(response.post)));
+
+  }
+
+  async uploadImage(imagePath: string): Promise<void> {
+
+    const fileUploadOptions: FileUploadOptions = {
+      fileKey: 'image',
+      headers: {
+        'x-token': this.usuarioService.token
+      }
+    };
+
+    const fileTransferObject: FileTransferObject = this.fileTransfer.create();
+
+    await fileTransferObject.upload(imagePath, `${environment.url}/post/upload`, fileUploadOptions);
 
   }
 
