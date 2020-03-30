@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Tab2Page } from './tab2.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
+import { PipesModule } from '../../pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { ExploreContainerComponentModule } from '../../explore-container/explore
     FormsModule,
     ExploreContainerComponentModule,
     RouterModule.forChild([{ path: '', component: Tab2Page }]),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PipesModule
   ],
   declarations: [Tab2Page]
 })
