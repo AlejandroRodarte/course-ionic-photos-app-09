@@ -11,6 +11,7 @@
       <ion-button 
         (click)="createPost()"
         color="primary"
+        [disabled]="postForm.invalid"
       >
         Compartir
       </ion-button>
@@ -23,7 +24,7 @@
 
 <ion-content class="ion-padding">
 
-  <ion-list>
+  <ion-list [formGroup]="postForm">
     
     <ion-item>
 
@@ -31,7 +32,8 @@
         Mensaje
       </ion-label>
 
-      <ion-textarea></ion-textarea>
+      <ion-textarea formControlName="mensaje">
+      </ion-textarea>
 
     </ion-item>
 
