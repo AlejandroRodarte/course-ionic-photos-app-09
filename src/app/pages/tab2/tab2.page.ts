@@ -5,6 +5,9 @@ import { PostsService } from '../../services/posts.service';
 import { tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+
+declare const window: any;
 
 @Component({
   selector: 'app-tab2',
@@ -27,7 +30,8 @@ export class Tab2Page implements OnInit {
   constructor(
     private postsService: PostsService,
     private navController: NavController,
-    private geoLocation: Geolocation
+    private geoLocation: Geolocation,
+    private camera: Camera
   ) {}
 
   ngOnInit() {
@@ -68,7 +72,7 @@ export class Tab2Page implements OnInit {
 
     try {
 
-      const { coords } = await this.geoLocation.getCurrentPosition();
+      const { coords } = await this.geoLocation.getCurrentPosition({ timeout: 90000 });
       this.postForm.get('coords').setValue(`${coords.latitude},${coords.longitude}`);
       console.log(this.postForm.value);
 
@@ -76,6 +80,33 @@ export class Tab2Page implements OnInit {
 
     } catch (e) {
       this.loadingGeo = false;
+    }
+
+  }
+
+  async onCameraClick(): Promise<void> {
+
+    const cameraOptions = {
+      quality: 60,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      correctOrientation: true,
+      sourceType: this.camera.PictureSourceType.CAMERA
+    };
+
+    try {
+
+      const imageData = await this.camera.getPicture(cameraOptions);
+
+      const img = window.Ionic.WebView.convertFileSrc(imageData);
+      console.log(img);
+
+      this.tempImages.push(img);
+      console.log(this.tempImages);
+
+    } catch (e) {
+      console.log(e);
     }
 
   }
