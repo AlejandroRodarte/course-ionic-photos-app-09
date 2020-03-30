@@ -22,23 +22,19 @@ export class MapComponent implements OnInit {
 
     mapboxgl.accessToken = environment.mapboxApiKey;
 
-    if (this.coords) {
+    const [latitud, longitud] = this.coords.split(',');
 
-      const [latitud, longitud] = this.coords.split(',');
+    const map = new mapboxgl.Map({
+      container: this.map.nativeElement,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [+longitud, +latitud],
+      zoom: 15
+    });
 
-      const map = new mapboxgl.Map({
-        container: this.map.nativeElement,
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [+longitud, +latitud],
-        zoom: 15
-      });
-
-      const marker = new mapboxgl
-                          .Marker()
-                          .setLngLat([+longitud, +latitud])
-                          .addTo(map);
-
-    }
+    const marker = new mapboxgl
+                        .Marker()
+                        .setLngLat([+longitud, +latitud])
+                        .addTo(map);
 
   }
 

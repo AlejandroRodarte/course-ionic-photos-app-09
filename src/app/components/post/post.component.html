@@ -28,7 +28,8 @@
   <!-- imagenes -->
 
   <ion-slides 
-    pager="true"
+    [pager]="post.img.length > 1"
+    [options]="{ 'allowSlidePrev': post.img.length > 1, 'allowSlideNext': post.img.length > 1 }"
     *ngIf="post.img.length > 0"
   >
 
@@ -42,7 +43,11 @@
   </ion-slides>
 
   <!-- mapa -->
-  <app-map [coords]="post.coords"></app-map>
+  <app-map 
+    [coords]="post.coords"
+    *ngIf="post.coords"
+  >
+  </app-map>
 
   <ion-item lines="none">
 
