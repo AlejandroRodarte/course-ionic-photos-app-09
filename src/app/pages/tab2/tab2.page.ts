@@ -75,7 +75,6 @@ export class Tab2Page implements OnInit {
 
       const { coords } = await this.geoLocation.getCurrentPosition({ timeout: 90000 });
       this.postForm.get('coords').setValue(`${coords.latitude},${coords.longitude}`);
-      console.log(this.postForm.value);
 
       this.loadingGeo = false;
 
@@ -122,12 +121,10 @@ export class Tab2Page implements OnInit {
       const imageData = await this.camera.getPicture(cameraOptions);
 
       const img = window.Ionic.WebView.convertFileSrc(imageData);
-      console.log(img);
 
       await this.postsService.uploadImage(imageData);
 
       this.tempImages.push(img);
-      console.log(this.tempImages);
 
     } catch (e) {
       console.log(e);

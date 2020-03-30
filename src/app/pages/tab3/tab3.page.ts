@@ -4,6 +4,7 @@ import { Usuario } from '../../../interfaces/user';
 import { UsuarioService } from '../../services/usuario.service';
 import { tap, catchError } from 'rxjs/operators';
 import { UiService } from '../../services/ui.service';
+import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-tab3',
@@ -18,6 +19,7 @@ export class Tab3Page implements OnInit {
 
   constructor(
     private usuarioService: UsuarioService,
+    private postsService: PostsService,
     private uiService: UiService
   ) {}
 
@@ -49,6 +51,8 @@ export class Tab3Page implements OnInit {
             }
           }
 
+          this.usuarioService.usuario = this.usuario;
+
         }),
         catchError(() => () => this.uiService.presentToast('No se pudo actualizar'))
       )
@@ -57,7 +61,8 @@ export class Tab3Page implements OnInit {
   }
 
   logout(): void {
-
+    this.usuarioService.logout();
+    this.postsService.resetTracker();
   }
 
   onAvatarSelected(avatarImg: string): void {

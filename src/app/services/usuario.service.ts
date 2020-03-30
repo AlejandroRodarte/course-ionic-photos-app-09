@@ -7,6 +7,7 @@ import { AuthResponse } from 'src/interfaces/auth-response';
 import { tap, map, switchMap } from 'rxjs/operators';
 import { Usuario } from '../../interfaces/user';
 import { UserInfoResponse } from 'src/interfaces/user-info-response';
+import { NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +32,16 @@ export class UsuarioService {
 
   constructor(
     private http: HttpClient,
-    private storage: Storage
+    private storage: Storage,
+    private navController: NavController
   ) { }
 
   get usuario() {
     return { ...this._usuario };
+  }
+
+  set usuario(usuario: Usuario) {
+    this._usuario = usuario;
   }
 
   login(email: string, password: string): Observable<boolean> {
@@ -47,8 +53,19 @@ export class UsuarioService {
             .post<AuthResponse>(`${environment.url}/user/login`, data)
             .pipe(
               tap(this.handleAuthResponseToken),
-              map((response: AuthResponse) => response.ok)
+              switchMap(() => this.validateToken()),
+              map((response: UserInfoResponse) => response.ok)
             );
+
+  }
+
+  logout(): void {
+
+    this.token = null;
+    this._usuario = null;
+
+    this.storage.clear();
+    this.navController.navigateRoot('/login', { animated: true });
 
   }
 
