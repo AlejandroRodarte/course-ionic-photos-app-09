@@ -1,6 +1,6 @@
 import { Post } from './post';
 
-export interface CreatePortResponse {
+export interface CreatePostResponse {
     ok: boolean;
     post: Post;
 }

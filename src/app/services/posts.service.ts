@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GetPostsResponse } from 'src/interfaces/get-posts-response';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from './../../environments/environment';
 import { PageTracker } from 'src/interfaces/page-tracker';
 import { tap } from 'rxjs/operators';
-import { CreatePortResponse } from 'src/interfaces/create-post-response';
+import { CreatePostResponse } from 'src/interfaces/create-post-response';
 import { UsuarioService } from './usuario.service';
 import { Post } from '../../interfaces/post';
 
@@ -18,6 +18,8 @@ export class PostsService {
     page: 1,
     lastPage: false
   };
+
+  public postCreated = new Subject<Post>();
 
   private updatePageTracker = (postsResponse: GetPostsResponse) => {
 
@@ -50,7 +52,7 @@ export class PostsService {
             .pipe(tap(this.updatePageTracker));
   }
 
-  createPost(post: Post): Observable<CreatePortResponse> {
+  createPost(post: Post): Observable<CreatePostResponse> {
 
     const headers = new HttpHeaders({
       'x-token': this.usuarioService.token
@@ -58,7 +60,8 @@ export class PostsService {
 
     return this
             .http
-            .post<CreatePortResponse>(`${environment.url}/post`, post, { headers });
+            .post<CreatePostResponse>(`${environment.url}/post`, post, { headers })
+            .pipe(tap((response: CreatePostResponse) => this.postCreated.next(response.post)));
 
   }
 

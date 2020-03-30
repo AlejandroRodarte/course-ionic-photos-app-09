@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PostsService } from '../../services/posts.service';
 import { Post } from '../../../interfaces/post';
 import { GetPostsResponse } from '../../../interfaces/get-posts-response';
 import { tap } from 'rxjs/operators';
 import { PageTracker } from '../../../interfaces/page-tracker';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
 
 @Component({
@@ -12,12 +12,14 @@ import { IonInfiniteScroll } from '@ionic/angular';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page implements OnInit, OnDestroy {
 
   @ViewChild(IonInfiniteScroll, { static: false })
   private infiniteScroll: IonInfiniteScroll;
 
   public posts: Post[] = [];
+
+  private postSub: Subscription;
 
   constructor(
     private postsService: PostsService
@@ -25,6 +27,7 @@ export class Tab1Page implements OnInit {
 
   ngOnInit() {
     this.loadPosts().subscribe();
+    this.postSub = this.postsService.postCreated.subscribe((post: Post) => this.posts.unshift(post));
   }
 
   loadMorePosts(event: any): void {
@@ -73,6 +76,10 @@ export class Tab1Page implements OnInit {
               )
             );
 
+  }
+
+  ngOnDestroy() {
+    this.postSub.unsubscribe();
   }
 
 }

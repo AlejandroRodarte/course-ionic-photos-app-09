@@ -3,6 +3,7 @@ import { Post } from '../../../interfaces/post';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { PostsService } from '../../services/posts.service';
 import { tap } from 'rxjs/operators';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -21,7 +22,8 @@ export class Tab2Page implements OnInit {
   };
 
   constructor(
-    private postsService: PostsService
+    private postsService: PostsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -39,7 +41,10 @@ export class Tab2Page implements OnInit {
       .postsService
       .createPost(this.postForm.value)
       .pipe(
-        tap(() => this.postForm.reset())
+        tap(() => {
+          this.navController.navigateForward('/main/tabs/tab1');
+          this.postForm.reset();
+        })
       )
       .subscribe();
 
